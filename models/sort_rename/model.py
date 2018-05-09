@@ -3,10 +3,22 @@ from keras import backend as K
 import pandas as pd
 import numpy as np
 from keras.models import Model
-from keras.layers import Input, Dense, LSTM, Lambda
+from keras.layers import Input, Dense, LSTM, Lambda, Bidirectional
 from keras.optimizers import Adadelta
 
-def create_model():
+def create_model_bidirectional():
+    
+    inp = Input(shape=(None, 3))
+    
+    lstm_bidir = Bidirectional(LSTM(30, return_sequences=True, implementation=2))(inp)
+
+    dense1 = Dense(16)(lstm_bidir)
+    
+    model = Model(inputs=[inp], outputs=[dense1])
+    model.compile(loss='mean_squared_error', optimizer=Adadelta())
+    return model
+    
+def create_model_back_forth():
     
     inp = Input(shape=(None, 3))
     

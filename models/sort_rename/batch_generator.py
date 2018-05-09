@@ -26,15 +26,15 @@ class BatchGenerator(object):
         store.close()
         #return x[:10000, :], y[:10000, :]
         #print x.shape, y.shape
-        return x[:self.MaxLen], y[:self.MaxLen]
+        return x, y
                 
     def loadSet(self, fset):
         xs = []
         ys = []
         for f in fset:
             x, y = self.loadEvent(f)
-            xs.append(x)
-            ys.append(y)
+            xs.append(x[:self.MaxLen])
+            ys.append(y[:self.MaxLen])
         return np.array(xs), np.array(ys)
     
     def testSet(self):

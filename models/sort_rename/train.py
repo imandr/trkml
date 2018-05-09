@@ -1,4 +1,4 @@
-from model import create_model, create_model_0
+from model import create_model_bidirectional
 from keras.callbacks import TensorBoard, ProgbarLogger, ModelCheckpoint
 from batch_generator import BatchGenerator
 import getopt, sys
@@ -23,7 +23,7 @@ callbacks = [tb]
 if save_to:
     callbacks.append(ModelCheckpoint(filepath=save_to, verbose=1, save_best_only=True, save_weights_only = True, monitor="val_loss"))
 
-model = create_model()
+model = create_model_bidirectional()
 
 if load_from:
     model.load_weighs(load_from)
