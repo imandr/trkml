@@ -45,7 +45,7 @@ class BatchGenerator(Primitive):
     def validateSet(self):
         return self.loadSet(self.ValidateFiles)
         
-    @synchrinized
+    @synchronized
     def trainGenerator(self, mbsize=10, files = None):
         if files is None:
             files = self.TrainFiles
