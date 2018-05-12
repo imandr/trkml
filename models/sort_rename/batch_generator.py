@@ -54,7 +54,7 @@ class BatchGenerator(Primitive):
             x, y = self.loadSet(fset)
             yield x, y
 
-    @synchrinized
+    @synchronized
     def infiniteTrainGenerator(self, mbsize=10, shuffle=True):
         files = self.TrainFiles[:]
         while True:
