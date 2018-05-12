@@ -1,7 +1,7 @@
 import glob, random
 import pandas as pd
 import numpy as np
-from pythreader import Primitive
+from pythreader import Primitive, synchronized
 
 class BatchGenerator(Primitive):
     
