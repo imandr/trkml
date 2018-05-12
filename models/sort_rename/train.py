@@ -3,11 +3,12 @@ from keras.callbacks import TensorBoard, ProgbarLogger, ModelCheckpoint
 from batch_generator import BatchGenerator
 import getopt, sys
 
-opts, args = getopt.getopt(sys.argv[1:], "s:l:p:w:")
+opts, args = getopt.getopt(sys.argv[1:], "s:l:p:w:b:")
 opts = dict(opts)
 save_to = opts.get("-s")
 load_from = opts.get("-l")
 workers = int(opts.get("-w", 1))
+mbsize = int(opts.get("-b", 10))
 if "-p" in opts:
     save_to = opts.get("-p")
     load_from = save_to
@@ -15,7 +16,9 @@ if "-p" in opts:
 
 data_dir = args[0]
 
-dataProvider = BatchGenerator(data_dir, nvalidate = 10)
+nvalidate = 50
+
+dataProvider = BatchGenerator(data_dir, nvalidate = nvalidate)
 validate_set = dataProvider.validateSet()
 print type(validate_set)
 
@@ -31,8 +34,8 @@ if load_from:
     model.load_weights(load_from)
     print "model weights loaded from %s" % (load_from,)
 
-model.fit_generator(dataProvider.infiniteTrainGenerator(), 
+model.fit_generator(dataProvider.infiniteTrainGenerator(mbsize=mbsize), 
     workers = workers, 
-    epochs=20, verbose=1, steps_per_epoch=90, validation_steps = 10,
+    epochs=100, verbose=1, steps_per_epoch=100, validation_steps = nvalidate,
     callbacks=callbacks,
     validation_data=validate_set)

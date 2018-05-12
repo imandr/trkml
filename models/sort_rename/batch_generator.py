@@ -44,16 +44,17 @@ class BatchGenerator(object):
     def validateSet(self):
         return self.loadSet(self.ValidateFiles)
         
-    def trainGenerator(self, files = None):
+    def trainGenerator(self, mbsize=10, files = None):
         if files is None:
             files = self.TrainFiles
-        for f in files:
-            x, y = self.loadEvent(f)
-            yield x.reshape((1,)+x.shape), y.reshape((1,)+y.shape)
+        for i in xrange(0, mbsize, len(files)):
+            fset = files[i:i+mbsize]
+            x, y = self.loadSet(fset)
+            yield x, y
             
-    def infiniteTrainGenerator(self, shuffle=True):
+    def infiniteTrainGenerator(self, mbsize=10, shuffle=True):
         files = self.TrainFiles[:]
         while True:
-            for x, y in self.trainGenerator(files):
+            for x, y in self.trainGenerator(files=files, mbsize=mbsize):
                 yield x, y
             random.shuffle(files)
