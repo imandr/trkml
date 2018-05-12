@@ -40,7 +40,7 @@ def rename_hits(hits, truth):
     hits_truth["r2"] = np.square(hits_truth["x"]) + np.square(hits_truth["y"])
     hits_truth["zabs"] = np.abs(hits_truth["z"])
     
-    hits_sorted = hits_truth.sort_values(["zabs", "r2", "x", "y"]).copy()
+    hits_sorted = hits_truth.sort_values(["z", "r2", "x", "y"]).copy()
     #print hits_sorted.head()
     particles = {}
     inx = 1
@@ -67,9 +67,9 @@ def rename_hits(hits, truth):
         out["ipid_%d" % (bit,)] = bits[:, bit]
         
     # normalize x,y,z
-    out["x"] = out["x"].values/1000.0
-    out["y"] = out["y"].values/1000.0
-    out["z"] = out["z"].values/3000.0
+    out["x"] = hits_sorted["x"].values/1000.0
+    out["y"] = hits_sorted["y"].values/1000.0
+    out["z"] = hits_sorted["z"].values/3000.0
 
     #print out.columns
     
@@ -77,9 +77,10 @@ def rename_hits(hits, truth):
 
 
 dir_path = sys.argv[1]
+out_dir = sys.argv[2]
 
-for event_id, hits, cells, particles, truth in load_dataset(dir_path):
-    hd5_file = "%s/event%d.hd5" % (dir_path, event_id)
+for event_id, hits, truth in load_dataset(dir_path, parts = ["hits", "truth"]):
+    hd5_file = "%s/event%d.hd5" % (out_dir, event_id)
     try:	os.remove(hd5_file)
     except:	pass
 

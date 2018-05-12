@@ -33,9 +33,10 @@ class BatchGenerator(object):
         ys = []
         for f in fset:
             x, y = self.loadEvent(f)
-            xs.append(x[:self.MaxLen])
-            ys.append(y[:self.MaxLen])
-        return np.array(xs), np.array(ys)
+            xs.append(x)
+            ys.append(y)
+        n = min([len(x) for x in xs])
+        return np.array([x[:n] for x in xs]), np.array([y[:n] for y in ys])
     
     def testSet(self):
         return self.loadSet(self.TestFiles)
