@@ -1,11 +1,12 @@
 import glob, random
 import pandas as pd
 import numpy as np
+from pythreader import Primitive
 
-
-class BatchGenerator(object):
+class BatchGenerator(Primitive):
     
     def __init__(self, in_dir, ntest = 0, nvalidate = 0, maxlen = 70000):
+        Primitive.__init__(self)
         self.InDir = in_dir
         files = sorted(glob.glob(in_dir + "/event*.hd5"))
         self.TestFiles = files[:ntest]
@@ -44,6 +45,7 @@ class BatchGenerator(object):
     def validateSet(self):
         return self.loadSet(self.ValidateFiles)
         
+    @synchrinized
     def trainGenerator(self, mbsize=10, files = None):
         if files is None:
             files = self.TrainFiles
@@ -51,7 +53,8 @@ class BatchGenerator(object):
             fset = files[i:i+mbsize]
             x, y = self.loadSet(fset)
             yield x, y
-            
+
+    @synchrinized
     def infiniteTrainGenerator(self, mbsize=10, shuffle=True):
         files = self.TrainFiles[:]
         while True:
