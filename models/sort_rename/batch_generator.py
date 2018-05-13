@@ -1,7 +1,23 @@
 import glob, random
 import pandas as pd
 import numpy as np
-from pythreader import Primitive, synchronized
+
+class GeneratorGuard(object):
+    
+    def __init__(self, gen):
+        self.Lock = Lock()
+        self.G = gen
+        
+    def __iter__(self):    return self
+    
+    def next(self):
+        with self.Lock:
+            return next(self.G)
+            
+def guarded(method):
+    def guarded_method(self, *params, **args):
+        return GeneratorGuard(method(self, *params, **agrs))
+    return guarded_method
 
 class BatchGenerator(Primitive):
     
@@ -45,7 +61,6 @@ class BatchGenerator(Primitive):
     def validateSet(self):
         return self.loadSet(self.ValidateFiles)
         
-    @synchronized
     def trainGenerator(self, mbsize=10, files = None):
         if files is None:
             files = self.TrainFiles
@@ -54,10 +69,11 @@ class BatchGenerator(Primitive):
             x, y = self.loadSet(fset)
             yield x, y
 
-    @synchronized
+    @guarded
     def infiniteTrainGenerator(self, mbsize=10, shuffle=True):
         files = self.TrainFiles[:]
         while True:
             for x, y in self.trainGenerator(files=files, mbsize=mbsize):
                 yield x, y
             random.shuffle(files)
+            
