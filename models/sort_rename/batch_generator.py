@@ -1,11 +1,12 @@
 import glob, random
 import pandas as pd
 import numpy as np
+from threading import RLock
 
 class GeneratorGuard(object):
     
     def __init__(self, gen):
-        self.Lock = Lock()
+        self.Lock = RLock()
         self.G = gen
         
     def __iter__(self):    return self
