@@ -16,7 +16,7 @@ class GeneratorGuard(object):
             
 def guarded(method):
     def guarded_method(self, *params, **args):
-        return GeneratorGuard(method(self, *params, **agrs))
+        return GeneratorGuard(method(self, *params, **args))
     return guarded_method
 
 class BatchGenerator(object):
