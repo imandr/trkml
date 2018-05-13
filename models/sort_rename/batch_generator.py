@@ -19,10 +19,9 @@ def guarded(method):
         return GeneratorGuard(method(self, *params, **agrs))
     return guarded_method
 
-class BatchGenerator(Primitive):
+class BatchGenerator(object):
     
     def __init__(self, in_dir, ntest = 0, nvalidate = 0, maxlen = 70000):
-        Primitive.__init__(self)
         self.InDir = in_dir
         files = sorted(glob.glob(in_dir + "/event*.hd5"))
         self.TestFiles = files[:ntest]
